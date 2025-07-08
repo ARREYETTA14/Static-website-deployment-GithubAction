@@ -61,7 +61,7 @@ AWS_SECRET_ACCESS_KEY
 ```
 Using the Principle of **Least Privilege**, to deploy to S3, the IAM user should have the ``AmazonS3FullAccess`` policy.
 
-## 🗂️ 2. Project Structure
+## 🗂️ 3. Project Structure
 ```bash
 my-site/
 ├── index.html
