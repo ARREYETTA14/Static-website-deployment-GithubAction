@@ -35,4 +35,5 @@ my-site/
 - Create the folder ``.github/workflows`` and add the ``deploy.yml``.
 - Add AWS secrets as shown above.
 - Push everything to the ``main`` branch.
+
 **🎉 GitHub Actions will now automatically deploy your site to S3 whenever you push new code. **
