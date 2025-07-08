@@ -107,3 +107,11 @@ Replace ``my-static-site-bucket`` and ``aws-region`` with your actual bucket nam
 - Push everything to the ``main`` branch.
 
 **🎉 GitHub Actions will now automatically deploy your site to S3 whenever you push new code. **
+
+- Go to **Actions** tab in GitHub
+    - You’ll see the workflow run automatically
+    - If successful, you’ll see ✅ green checkmarks
+- Visit your website at:
+```text
+http://my-static-site-bucket.s3-website-us-east-1.amazonaws.com
+```
