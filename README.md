@@ -1,10 +1,52 @@
 # Static-website-deployment-GithubAction
 Automated Deployment of a Simple HTML using Github Action 
 
-## 🔐 1. Setting Up AWS Credentials in GitHub
+##  STEP 1: Create and Configure the S3 Bucket
+### 1.1 Create the S3 Bucket
+- Go to AWS S3 Console
+- Click **"Create bucket"**
+- Fill in:
+    - **Bucket name**: ``my-static-site-bucket`` (must be unique globally)
+    - **Region**: Choose your region (e.g., us-east-1)
+- Under **Block Public Access**, uncheck **“Block all public access”**
+- Confirm the warning checkbox
+- Click **Create bucket**
+
+### 🌐 1.2 Enable Static Website Hosting
+- Click your **bucket name**
+- Go to the **Properties** tab
+- Scroll to **Static website hosting**
+- Click **Edit**
+    - Select **Enable**
+    - **Index document**: ``index.html``
+    - **Error document**: ``(optional) error.html``
+- Click **Save changes**
+
+### 🔐 1.3 Make Your Bucket Public (Set Bucket Policy)
+- Go to the **Permissions** tab
+- Scroll to **Bucket policy**
+- Paste this, replacing the bucket name:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicRead",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::my-static-site-bucket/*"
+    }
+  ]
+}
+```
+- Click **Save**
+
+## STEP 2: Prepare Your GitHub Repository
+### 🔐 2.1 Setting Up AWS Credentials in GitHub
 Before your workflow can deploy to AWS, GitHub needs permission to access your AWS account. This is done securely through GitHub Secrets.
 
-### 1.1 Step-by-step: Add AWS credentials to GitHub
+### Step-by-step: Add AWS credentials to GitHub
 - Go to your GitHub repo
 - Click on the **Settings** tab
 - In the left sidebar, scroll to:
