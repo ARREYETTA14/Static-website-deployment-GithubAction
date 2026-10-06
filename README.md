@@ -7,25 +7,25 @@ Automated Deployment of a Simple HTML using Github Action
 - Click **"Create bucket"**
 - Fill in:
     - **Bucket name**: ``my-static-site-bucket`` (must be unique globally)
-    - **Region**: Choose your region (e.g., us-east-1)
+    - **Region**: Choose your region (*e.g., ``us-east-1``*)
 - Under **Block Public Access**, uncheck **“Block all public access”**
-- Confirm the warning checkbox
+- Confirm the warning checkbox acknowledging the bucket will become public
 - Click **Create bucket**
 
 ### 🌐 1.2 Enable Static Website Hosting
-- Click your **bucket name**
+- Click your newly created bucket name
 - Go to the **Properties** tab
-- Scroll to **Static website hosting**
-- Click **Edit**
-    - Select **Enable**
-    - **Index document**: ``index.html``
-    - **Error document**: ``(optional) error.html``
+- Scroll down to **Static website hosting** and click **Edit**.
+- Select **Enable**
+- **Index document**: ``index.html``
+- **Error document**: ``(optional) error.html``
 - Click **Save changes**
 
 ### 🔐 1.3 Make Your Bucket Public (Set Bucket Policy)
 - Go to the **Permissions** tab
-- Scroll to **Bucket policy**
-- Paste this, replacing the bucket name:
+- Scroll to **Bucket policy** and click **Edit**
+- Paste the following JSON configuration, ensuring you replace ``my-static-site-bucket`` with your actual bucket name:
+
 ```json
 {
   "Version": "2012-10-17",
@@ -39,29 +39,27 @@ Automated Deployment of a Simple HTML using Github Action
     }
   ]
 }
+
 ```
-- Click **Save**
+- Click **Save changes**
 
 ## STEP 2: Prepare Your GitHub Repository
 ### 🔐 2.1 Setting Up AWS Credentials in GitHub
 Before your workflow can deploy to AWS, GitHub needs permission to access your AWS account. This is done securely through GitHub Secrets.
 
 ### Step-by-step: Add AWS credentials to GitHub
-- Go to your GitHub repo
+- Go to your repository on GitHub.
 - Click on the **Settings** tab
-- In the left sidebar, scroll to:
-```nginx
-Secrets and variables → Actions
-```
-- Click the **“New repository secret”** button
-- Add two secrets:
+- In the left sidebar, expand **Secrets and variables** → Click **Actions**.
+- Add the following two secrets using the credentials generated from an AWS IAM user equipped with ``AmazonS3FullAccess``:
 ```txt
 AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 ```
-Using the Principle of **Least Privilege**, to deploy to S3, the IAM user should have the ``AmazonS3FullAccess`` policy.
 
 ## 🗂️ 3. Project Structure
+
+Ensure your project matches this exact file structure:
 ```bash
 my-site/
 ├── index.html
@@ -70,11 +68,11 @@ my-site/
         └── deploy.yml
 ```
 - Create a repo on GitHub (e.g., my-site)
-- Add ``index.html`` with content like:
+- Add ``index.html`` with your web content (e.g.,):
 ```html
 <h1>Welcome to My GitHub Actions S3 Website!</h1>
 ```
-- Create the folder ``.github/workflows`` and add the ``deploy.yml``.
+- Populate ``.github/workflows/deploy.yml`` with the updated configuration below:
 ```yaml
 name: Deploy to S3
 
@@ -88,30 +86,27 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Deploy to S3
-        run: aws s3 sync . s3://my-static-site-bucket --delete
+        run: aws s3 sync . s3://my-static-site-bucket --delete --exclude ".git*"
+
 ```
 
-Replace ``my-static-site-bucket`` and ``aws-region`` with your actual bucket name and Region, respectively.
+Swap out ``my-static-site-bucket`` and ``aws-region`` with your actual values.
 
-- Add AWS secrets as shown above.
-- Push everything to the ``main`` branch.
+- Commit and Push everything to the ``main`` branch.
 
 **🎉 GitHub Actions will now automatically deploy your site to S3 whenever you push new code. **
 
-- Go to **Actions** tab in GitHub
-    - You’ll see the workflow run automatically
-    - If successful, you’ll see ✅ green checkmarks
-- Visit your website at:
-```text
-http://my-static-site-bucket.s3-website-us-east-1.amazonaws.com
-```
+- You can view its progress in your repository's **Actions** tab and access your website through the bucket website endpoint at:
+``http://my-static-site-bucket.s3-website-us-east-1.amazonaws.com``
+
+
