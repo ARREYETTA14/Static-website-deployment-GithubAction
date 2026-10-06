@@ -131,7 +131,7 @@ Now, you need to create an AWS role that your GitHub pipeline is allowed to assu
 
 1. In the left sidebar of the **IAM Console**, click **Roles** and then click **Create role**.
 2. Select Custom trust policy under *Trusted entity type*
-3. Paste the following JSON block into the policy editor. 🚨 CRITICAL: Replace ``<YOUR_AWS_ACCOUNT_ID>``, ``<YOUR_GITHUB_ORGANIZATION_OR_USER>``, ``<YOUR_BRANCH_NAME>`` and ``<YOUR_GITHUB_REPO_NAME>`` with your actual deployment details:
+3. Paste the following JSON block into the policy editor. 🚨 CRITICAL: Replace ``<YOUR_AWS_ACCOUNT_ID>``, ``<YOUR_GITHUB_ORGANIZATION_OR_USER>``, and ``<YOUR_GITHUB_REPO_NAME>`` with your actual deployment details:
 
 ```json
 {
@@ -144,9 +144,9 @@ Now, you need to create an AWS role that your GitHub pipeline is allowed to assu
       },
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
-        "StringEquals": {
+        "StringLike": {
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
-          "token.actions.githubusercontent.com:sub": "repo:<YOUR_GITHUB_ORGANIZATION_OR_USERNAME>/<YOUR_REPOSITORY_NAME>:ref:refs/heads/<YOUR_BRANCH_NAME>"
+          "token.actions.githubusercontent.com:sub": "repo:<YOUR_GITHUB_USERNAME_OR_ORG>/<YOUR_REPOSITORY_NAME>:*"
         }
       }
     }
