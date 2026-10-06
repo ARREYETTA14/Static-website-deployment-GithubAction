@@ -1,1 +1,197 @@
-<h1>This site is now auto-deployed every push </h1>
+<!-- <h1>This site is now auto-deployed every push </h1> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cloud Workspace | Pipeline Active</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131c2e;
+            --border-color: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --primary: #38bdf8;
+            --accent: #ec4899;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 0 24px;
+        }
+
+        header {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-pill {
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            color: #10b981;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 80px auto;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 16px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .card .icon {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        footer {
+            max-width: 1100px;
+            margin: 120px auto 40px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 30px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            header { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">CloudForge //</div>
+        <div class="status-pill">
+            <span class="pulse-dot"></span>
+            <span>Live via GitHub Actions</span>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Deployment Successful</h1>
+            <p>Your CI/CD pipeline intercepted the git push event, synchronized changes securely, and populated this static site natively into your AWS S3 framework.</p>
+        </section>
+
+        <div class="grid">
+            <div class="card">
+                <span class="icon">📦</span>
+                <h3>GitHub Actions Engine</h3>
+                <p>Monitors code modifications. Upon merge execution, workflow execution blocks transition logic onto temporary runners built securely inside isolated virtual environments.</p>
+            </div>
+            <div class="card">
+                <span class="icon">🔒</span>
+                <h3>Secure Authentication</h3>
+                <p>Utilizes programmatic identity structures configuration variables to authorize API calls against regional resources securely without embedding hardcoded access values.</p>
+            </div>
+            <div class="card">
+                <span class="icon">⚡</span>
+                <h3>S3 Object Optimization</h3>
+                <p>Hosts atomic static asset trees publically. Configured structural hosting attributes bypass server configuration overhead to route objects directly onto browser engines.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 CloudForge Blueprint. Automated Cloud Infrastructure Testing Platform.</p>
+    </footer>
+
+</body>
+</html>
