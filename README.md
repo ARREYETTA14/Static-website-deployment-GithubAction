@@ -110,3 +110,100 @@ Swap out ``my-static-site-bucket`` and ``aws-region`` with your actual values.
 ``http://my-static-site-bucket.s3-website-us-east-1.amazonaws.com``
 
 
+# Using OpenID Connect (OIDC)
+
+Switching to **OpenID Connect (OIDC)** is an industry best practice. Instead of saving permanent AWS Access Keys inside your GitHub repository (which can easily leak if misconfigured), GitHub Actions dynamically requests **temporary**, **short-lived credentials** directly from AWS that expire automatically after one hour.
+
+## STEP 1: Create the OIDC Identity Provider in AWS
+1. Log into your **AWS Management Console**.
+2. Navigate to the **IAM Console** (Identity and Access Management).
+3. In the left sidebar, click **Identity providers** under *Access management*.
+4. Click **Add provider**.
+5. Configure these exact settings:
+	• **Provider type**: Select **OpenID Connect**.
+	• **Provider URL**: Paste ``token.actions.githubusercontent.com``
+	• Audience: Type ``sts.amazonaws.com``
+6. Click Add provider.
+
+## STEP 2: Create a Secure IAM Role for GitHub Actions
+
+Now, you need to create an AWS role that your GitHub pipeline is allowed to assume.
+
+1. In the left sidebar of the **IAM Console**, click **Roles** and then click **Create role**.
+2. Select Custom trust policy under *Trusted entity type*
+3. Paste the following JSON block into the policy editor. 🚨 CRITICAL: Replace ``<YOUR_AWS_ACCOUNT_ID>``, ``<YOUR_GITHUB_ORGANIZATION_OR_USER>``, ``<YOUR_BRANCH_NAME>`` and ``<YOUR_GITHUB_REPO_NAME>`` with your actual deployment details:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:oidc-provider/token.actions.githubusercontent.com"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+          "token.actions.githubusercontent.com:sub": "repo:<YOUR_GITHUB_ORGANIZATION_OR_USERNAME>/<YOUR_REPOSITORY_NAME>:ref:refs/heads/<YOUR_BRANCH_NAME>"
+        }
+      }
+    }
+  ]
+}
+```
+4. Click **Next**
+5. On the *Add permissions screen*, search for and check the box next to ``AmazonS3FullAccess`` (or attach a limited policy that only allows writes to your specific bucket).
+6. Click **Next**.
+7. **Role name**: Enter ``github-s3-deploy-role``.
+8. Review your choices and click **Create role**.
+9. Copy the **ARN** string of your new role (it will look like arn:aws:iam::123456789012:role/github-s3-deploy-role).
+
+## STEP 3: Update Your GitHub Workflow File
+Before you configure your workflow, you need to make the Role ARN available to it. You'll store it as a repository variable in GitHub, not a secret, because the ARN itself isn't sensitive data.
+
+- First, open your GitHub repository and click **Settings**.
+- In the left sidebar, scroll down to **Secrets and variables**, then click **Actions**.
+- Then click the **Variables** tab (not Secrets). Click **New repository variable** – you can put the name as **AWS_GITHUB_ROLE**.
+- Set the Value to your **Role ARN**
+- Click **Add variable**
+
+With AWS and GitHub fully configured, you now need to update your workflow to request an OIDC token and use it to authenticate.
+
+- Your workflow must declare ``id-token: write``. Without this, GitHub won't issue an OIDC token to the runner.
+For example:
+```yaml
+name: Deploy to AWS S3
+ 
+on:
+  push:
+    branches:
+      - main
+ 
+permissions:
+  id-token: write
+  contents: read
+ 
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+ 
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-2
+ 
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+ 
+      - name: Deploy to S3
+        run: |
+          aws s3 sync ./code s3://your-bucket-name
+```
