@@ -67,12 +67,14 @@ my-site/
     └── workflows/
         └── deploy.yml
 ```
-- Create a repo on GitHub (e.g., my-site)
-- Add ``index.html`` with your web content (e.g.,):
+- Create a repo on GitHub (e.g., ``my-site``)
+- Add ``index.html`` with your web content:
+  
 ```html
 <h1>Welcome to My GitHub Actions S3 Website!</h1>
 ```
 - Populate ``.github/workflows/deploy.yml`` with the updated configuration below:
+  
 ```yaml
 name: Deploy to S3
 
