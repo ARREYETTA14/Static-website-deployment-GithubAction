@@ -120,9 +120,9 @@ Switching to **OpenID Connect (OIDC)** is an industry best practice. Instead of 
 3. In the left sidebar, click **Identity providers** under *Access management*.
 4. Click **Add provider**.
 5. Configure these exact settings:
-	• **Provider type**: Select **OpenID Connect**.
-	• **Provider URL**: Paste ``token.actions.githubusercontent.com``
-	• Audience: Type ``sts.amazonaws.com``
+	- **Provider type**: Select **OpenID Connect**.
+	- **Provider URL**: Paste ``token.actions.githubusercontent.com``
+	- **Audience: Type** ``sts.amazonaws.com``
 6. Click Add provider.
 
 ## STEP 2: Create a Secure IAM Role for GitHub Actions
